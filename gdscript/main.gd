@@ -3,8 +3,18 @@ extends Node
 @export var mob_scene: PackedScene
 var score
 
-func _ready():
-	print("hi")
+
+func new_game():
+	score = 0
+	$Music.play()
+	$Player.health=100
+	$HUD.update_health($Player.health)
+	$HUD.update_score(score)
+	$HUD.show_message("Get Ready")
+	$Player.start($StartPosition.position)
+	$StartTimer.start()
+	get_tree().call_group("mobs", "queue_free")
+
 
 func game_over() :
 	$ScoreTimer.stop()
@@ -14,14 +24,6 @@ func game_over() :
 	$Music.stop()
 	$Game_over.play()
 
-func new_game():
-	score = 0
-	$Music.play()
-	$HUD.update_score(score)
-	$HUD.show_message("Get Ready")
-	$Player.start($StartPosition.position)
-	$StartTimer.start()
-	get_tree().call_group("mobs", "queue_free")
 
 
 func _on_mob_timer_timeout() :

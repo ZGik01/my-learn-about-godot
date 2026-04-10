@@ -4,6 +4,7 @@ signal damage
 @export var speed=400
 @export var health=100
 var screen_size
+var bullet_scene=preload("res://scene/bullet.tscn")
 
 func _ready() :
 	screen_size=get_viewport_rect().size
@@ -39,6 +40,17 @@ func _process(delta):
 		$AnimatedSprite2D.animation = "up"
 		$AnimatedSprite2D.flip_v = velocity.y > 0
 
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index==MOUSE_BUTTON_LEFT and event.pressed:
+		shoot()
+
+func shoot():
+	var bullet=bullet_scene.instantiate()
+	bullet.position=position
+	var mouse_pos=get_global_mouse_position()
+	var dir=(mouse_pos-global_position).normalized()
+	bullet.direction=dir
+	get_parent().add_child(bullet)
 # hit
 func _on_body_entered(_body) :
 	if health>0:
@@ -53,5 +65,4 @@ func _on_body_entered(_body) :
 # new scene
 func start(pos):
 	position = pos
-	show()
 	$CollisionShape2D.disabled = false
